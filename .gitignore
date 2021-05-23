@@ -1,0 +1,8 @@
+# Be safe, don't leak messages.
+*.txt
+*.json
+
+
+# Ignore IDE
+.idea
+venv
