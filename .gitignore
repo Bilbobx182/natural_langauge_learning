@@ -6,3 +6,4 @@
 # Ignore IDE
 .idea
 venv
+messages
