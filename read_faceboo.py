@@ -1,24 +1,7 @@
-import glob
 import json
 import os
-import multiprocessing
-import time
 import re
-import string
-def deEmojify(text):
-    """
-    https://stackoverflow.com/questions/33404752/removing-emojis-from-a-string-in-python
-
-    :param text:
-    :return:
-    """
-    regrex_pattern = re.compile(pattern="["
-                                        u"\U0001F600-\U0001F64F"  # emoticons
-                                        u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-                                        u"\U0001F680-\U0001F6FF"  # transport & map symbols
-                                        u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-                                        "]+", flags=re.UNICODE)
-    return regrex_pattern.sub(r'', text)
+from util import deEmojify,clean
 
 def get_files():
     paths = []
@@ -27,21 +10,17 @@ def get_files():
             if name.endswith((".json")):
                 full_path = os.path.join(root, name)
                 paths.append(full_path)
+    print(paths)
     return paths
 
 def read_facebook_data():
-    filedata = {filename: json.loads(''.join(open(filename, 'r').readlines())) for filename in get_files()}
-    filedata.keys()
-
-    mychat = []
-    for chat in  filedata.keys():
-        try:
-            for message in filedata[chat]['messages']:
-                if 'Ciar' in message['sender_name']:
-                    cleansed = re.sub(r'[^\w\s]','',message['content'].lower().replace("\n",""))
-                    print(deEmojify(cleansed))
-        except:
-            continue
-
-if __name__ == "__main__":
-    read_facebook_data()
+    data = []
+    for file in get_files():
+        chat = []
+        with open(file) as f:
+            d = json.load(f)
+            for message in d['messages']:
+                if "Ciar" in message['sender_name'] and 'content' in message:
+                    chat.append(clean(message['content']))
+        data.append(chat)
+    return data
