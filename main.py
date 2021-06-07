@@ -1,9 +1,15 @@
+from concurrent.futures.thread import ThreadPoolExecutor
+from multiprocessing.context import Process
+
+import multiprocessing as mp
 import spacy
 from collections import Counter
 from const import MOST_COMMON
 from multiprocessing import Pool
 from read_faceboo import read_facebook_data
 from whatsapp import load_whatsapp_data
+from datetime import datetime
+
 
 
 # TODO LIST :
@@ -30,6 +36,7 @@ class NLU():
 
     def render_most_common(self, common_words):
         x = 1
+        print(common_words)
         for item in common_words:
             print(f"{x}:{item}")
             x += 1
@@ -40,31 +47,38 @@ class NLU():
         print("Noun phrases:", [chunk.text for chunk in self.doc.noun_chunks if " " in chunk.text])
         print("Verbs:", [token.lemma_ for token in self.doc if token.pos_ == "VERB" and (len(token.lemma_) > 3)])
 
-    def process_data(self, data):
-        print("Starting process")
-        for chat in data:
-            print("--------")
-            self.doc = self.nlp(''.join(chat))
-            # self.f_doc = self.nlp(read_facebook_data())
+    def process_data(self):
+        self.doc = self.nlp(' '.join(self.chat_messages))
+        # self.f_doc = self.nlp(read_facebook_data())
+        # Get the lementised wording
+        self.get_lementised()
+        # Get the most common words
+        self.render_most_common(self.get_most_common_words(''.join(self.chat_messages)))
+        # Get the verbs and nouns
+        self.get_verbs_and_nouns()
 
-            # Get the lementised wording
-            self.get_lementised()
-            # Get the most common words
-            self.render_most_common(self.get_most_common_words(''.join(chat)))
-            # Get the verbs and nouns
-            self.get_verbs_and_nouns()
-
-        self.render_most_common(self.all)
-
-    def __init__(self):
+    def __init__(self, data):
         self.nlp = spacy.load("en_core_web_trf")
         self.all = []
-        # Set the document to our cleansed data.txt
+        self.chat_messages = data
 
-        # wapp = load_whatsapp_data()
-        self.data = read_facebook_data()
+
+
+def start_chat_nlu(data):
+    nlu = NLU(data)
+    nlu.process_data()
 
 
 if __name__ == "__main__":
-    nlu = NLU()
-    nlu.process_data(nlu.data)
+    print("start =", datetime.now())
+    data = read_facebook_data()
+    pool = mp.Pool(mp.cpu_count())
+    result = pool.starmap(start_chat_nlu, zip(data))
+    print("end =", datetime.now())
+
+
+
+
+    # sys.stdout = open('DATA_OUTPUT.txt', 'w')
+    # datetime object containing current date and time
+    # sys.stdout.close()
