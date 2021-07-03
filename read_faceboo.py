@@ -1,8 +1,8 @@
-import json
 import os
-import re
-from util import deEmojify, clean
-import numpy as np
+import json
+from nltk.sentiment import SentimentIntensityAnalyzer
+from util import clean
+import config
 
 def get_files():
     paths = []
@@ -16,15 +16,24 @@ def get_files():
 
 def read_facebook_data():
     data = []
+    my_messages = ""
     for file in get_files():
         chat = []
         with open(file) as f:
             d = json.load(f)
             for message in d['messages']:
                 if "Ciar" in message['sender_name'] and 'content' in message:
+                    my_messages += message['content']
                     if 'http' not in message['content']:
                         cleansed = clean(message['content'])
                         if cleansed.isascii():
                             chat.append(cleansed)
+
+        if(config.CHECK_SENTIMENT):
+            print(f"Sentiment Analysis chat {file.split('messages/inbox/')[1]}")
+            print("-------------------")
+            sia = SentimentIntensityAnalyzer()
+            print(sia.polarity_scores(my_messages))
+            my_messages = ""
         data.append(chat)
     return data
