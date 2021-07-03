@@ -22,11 +22,9 @@ def read_facebook_data():
             d = json.load(f)
             for message in d['messages']:
                 if "Ciar" in message['sender_name'] and 'content' in message:
-                    chat.append(clean(message['content']))
-
-                    # We chunk the data like this so we can process the data
-                    if len(chat) > 50:
-                        data.append(chat)
-                        chat = []
+                    if 'http' not in message['content']:
+                        cleansed = clean(message['content'])
+                        if cleansed.isascii():
+                            chat.append(cleansed)
         data.append(chat)
     return data

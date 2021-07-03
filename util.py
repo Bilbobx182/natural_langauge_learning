@@ -17,4 +17,4 @@ def deEmojify(text):
     return regrex_pattern.sub(r'', text)
 
 def clean(text):
-    return ''.join(word.strip(string.punctuation) for word in text).replace("\n", "").lower()
+    return ''.join(word.strip(string.punctuation) for word in text).replace("\n", "").lower().strip()
