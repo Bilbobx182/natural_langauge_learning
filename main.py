@@ -79,6 +79,7 @@ def get_verbs_and_nouns(doc, words):
             print(f"EN {item} PT: No Translation Found! frequency : {ordered_verbs[item]}")
 
 if __name__ == "__main__":
+    print("Started reading data.\n processing....")
     data = read_facebook_data()
     words = get_count(data)
     all_lemma = cleanse_lemma(words.keys())
