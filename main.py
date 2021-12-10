@@ -30,6 +30,12 @@ def cleanse_lemma(chat_messages):
 
 
 def get_count(data):
+    """
+    This is *THE* critical method to the project.
+    Basically, 
+    :param data:
+    :return:
+    """
     sentences = [line.strip().split(" ") for line in list(itertools.chain.from_iterable(data))]
     words = list(itertools.chain.from_iterable(sentences))
     counts = collections.Counter(words)
@@ -42,7 +48,7 @@ def get_count(data):
         x = 1
         for item in counts.most_common(100):
             try:
-                print(f"{x}: EN {item[0]} PT : {PonsTranslator(source='english', target='portuguese').translate(item[0], return_all=True)[:3]} frequency : {item[1]}")
+                print(f"{x}: EN {item[0]} JP : {PonsTranslator(source='english', target='japanese').translate(item[0], return_all=True)[:3]} frequency : {item[1]}")
             except:
                 print(f"{x}: EN {item[0]}  frequency : {item[1]}")
             x += 1

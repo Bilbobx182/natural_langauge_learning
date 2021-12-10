@@ -1,3 +1,8 @@
+CHECK_SENTIMENT = 0
+NOUN_ANALYSIS = 1
+VERB_ANALYSIS = 1
+MOST_COMMON = 1
+
 # https://en.wikipedia.org/wiki/Most_common_words_in_English
 WIKI_WORDS = ["the",
        "be",
@@ -99,8 +104,3 @@ WIKI_WORDS = ["the",
        "day",
        "most",
        "us"]
-
-CHECK_SENTIMENT = 0
-NOUN_ANALYSIS = 1
-VERB_ANALYSIS = 1
-MOST_COMMON = 1

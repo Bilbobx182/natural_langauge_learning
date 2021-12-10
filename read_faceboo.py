@@ -5,6 +5,10 @@ from util import clean
 import config
 
 def get_files():
+    """
+    Gets a list of paths in the messages folder.
+    :return:
+    """
     paths = []
     for root, dirs, files in os.walk("messages/inbox"):
         for name in files:
@@ -15,6 +19,11 @@ def get_files():
 
 
 def read_facebook_data():
+    """
+    Read the json data.
+    Clean it.
+    Return the data.
+    """
     data = []
     my_messages = ""
     for file in get_files():
